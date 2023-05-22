@@ -1,14 +1,15 @@
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 const firebaseConfig = {
-  apiKey: "AIzaSyC96Cj9RwxdCZLHDTXBEvOBNh1WNmTK70M",
-  authDomain: "realtimechatapp-8c2a5.firebaseapp.com",
-  databaseURL: "https://realtimechatapp-8c2a5-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "realtimechatapp-8c2a5",
-  storageBucket: "realtimechatapp-8c2a5.appspot.com",
-  messagingSenderId: "1083491875653",
-  appId: "1:1083491875653:web:5d82562f55bd340f5adc2c",
-  measurementId: "G-71ZDH449D6",
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DB_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
 export default firebaseConfig;
