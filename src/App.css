@@ -1,0 +1,14 @@
+.main-content {
+  text-align: center;
+}
+
+.main-content ul {
+  list-style: none; /* Remove default list markers */
+  padding: 0;
+  text-align: center; /* Center list items horizontally */
+}
+
+ul li {
+  margin-bottom: 10px;
+}
+
