@@ -20,18 +20,28 @@ const PrivateChat = () => {
 
   useEffect(() => {
     const messagesRef = firebase.database().ref("privateMessages");
-    const query = messagesRef.orderByChild("recipientId").equalTo(userId);
+    const currentUserQuery = messagesRef.orderByChild("senderId").equalTo(userID);
+    const recipientUserQuery = messagesRef.orderByChild("recipientId").equalTo(userID);
 
-    query.on("value", (snapshot) => {
-      const messageList = snapshot.val();
-      const messages = messageList ? Object.values(messageList) : [];
-      setMessages(messages);
+    currentUserQuery.on("value", (snapshot) => {
+      const currentUserMessages = snapshot.val();
+      recipientUserQuery.on("value", (snapshot) => {
+        const recipientUserMessages = snapshot.val();
+
+        const currentUserMessageList = currentUserMessages ? Object.values(currentUserMessages) : [];
+        const recipientUserMessageList = recipientUserMessages ? Object.values(recipientUserMessages) : [];
+
+        const allMessages = [...currentUserMessageList, ...recipientUserMessageList];
+        const sortedMessages = allMessages.sort((a, b) => a.timestamp - b.timestamp);
+        setMessages(sortedMessages);
+      });
     });
 
     return () => {
-      query.off(); // Unsubscribe from the message updates
+      currentUserQuery.off(); // Unsubscribe from the current user query
+      recipientUserQuery.off(); // Unsubscribe from the recipient user query
     };
-  }, [userId]);
+  }, [userId, userID]);
 
   const handleSendMessage = () => {
     if (message.trim() !== "") {
@@ -58,7 +68,7 @@ const PrivateChat = () => {
       <div className="text-center">
         {messages.map((msg) => (
           <p key={msg.timestamp}>
-            <span className="sender">{msg.senderId === userID ? "me" : msg.userId}:</span> {msg.text}
+            <span className="sender">{msg.senderId === userID ? "me" : msg.senderId}:</span> {msg.text}
           </p>
         ))}
       </div>
