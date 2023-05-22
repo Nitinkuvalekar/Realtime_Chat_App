@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -7,10 +8,10 @@ import "firebase/compat/database";
 
 const ChatRoomPage = () => {
   const { id } = useParams(); // Retrieve the room ID from the URL parameter
-  const [roomData, setRoomData] = useState(null);
+  const [roomData, setRoomData] = useState([]);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-
+  let [currentUserID, setCurrentUserID] = useState(null);
   // Retrieve the currently logged-in user
   const currentUser = firebase.auth().currentUser;
   const userID = currentUser?.email.split("@")[0];
@@ -44,6 +45,7 @@ const ChatRoomPage = () => {
   };
 
   useEffect(() => {
+    setCurrentUserID(userID);
     if (currentUser) {
       const roomRef = firebase.database().ref(`chatRooms/${id}`);
       const usersRef = roomRef.child("users");
@@ -54,8 +56,7 @@ const ChatRoomPage = () => {
           usersRef.once("value", (snapshot) => {
             const users = snapshot.val();
             const userList = users ? Object.values(users) : [];
-            const userExists = userList.some((user) => user.id === currentUser.id);
-
+            const userExists = userList.includes(userID);
             resolve(userExists);
           });
         });
@@ -67,7 +68,7 @@ const ChatRoomPage = () => {
         }
       });
     }
-  }, [id]);
+  }, [id, userID]);
 
   return (
     <div>
@@ -96,7 +97,7 @@ const ChatRoomPage = () => {
         </div>
 
         <div className="col-lg-8">
-          <div className="text-left" style={{ marginLeft: '190px' }}>
+          <div className="text-left" style={{ marginLeft: "190px" }}>
             <h3>Chat Messages:</h3>
             {messages.map((msg) => (
               <p key={msg.id}>
